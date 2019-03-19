@@ -1,0 +1,11 @@
+{
+      "scripts": {
+            "setup": "node setupOkta.js --apply",
+            "wipe": "node setupOkta.js --wipe"
+      },
+      "dependencies": {
+            "@okta/okta-sdk-nodejs": "^1.2.0",
+            "commander": "^2.19.0",
+            "request": "^2.88.0"
+      }
+}
