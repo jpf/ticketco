@@ -121,7 +121,7 @@ var emailFactorRules = [
   {
     "name": "Email Factor: AuthN",
     "type": "Okta:AuthenticationFactors",
-    "isDefault": true,
+    "isDefault": false,
     "rules": [
       {
         "type": "Okta:AuthenticationFactors",
@@ -152,7 +152,7 @@ var emailFactorRules = [
   {
     "name": "Email Factor: Enrollment",
     "type": "Okta:EnrollmentProfile",
-    "isDefault": true,
+    "isDefault": false,
     "rules": [
       {
         "type": "Okta:EnrollmentProfile",
@@ -174,7 +174,7 @@ var emailFactorRules = [
   {
     "name": "Email Factor: Activation",
     "type": "Okta:ActivationFactors",
-    "isDefault": true,
+    "isDefault": false,
     "rules": [
       {
         "type": "Okta:ActivationFactors",
@@ -253,6 +253,7 @@ async function wipe() {
     });
 }
 
+// TODO: Delete me if this works!
 // This is to handle a schema change and will be useless after 2018-03-20
 function patchRule(rule) {
   if(rule.requirement.factorRequirements || rule.requirement.inlineHookRequirements) {
@@ -292,7 +293,7 @@ async function applyRuleSet(ruleSetPayload, app) {
   ruleSetPayload.rules = []
   let ruleSet = await client.createRuleSet(ruleSetPayload)
   // await ruleSet.addRule(rulePayload)
-  await ruleSet.addRule(patchRule(rulePayload))
+  await ruleSet.addRule(rulePayload)
   await ruleSet.addMapping(app)
 }
 
@@ -385,8 +386,13 @@ async function apply() {
   }
   
   let eventHookPayload = {
-    "displayName": "user.lifecycle.create hook",
-    "events": ["user.lifecycle.create"],
+    "name": "user.lifecycle.create hook",
+    "events" : {
+      "type" : "EVENT_TYPE",
+      "items" : [
+        "user.lifecycle.create"
+      ]
+    },
     "channel": {
       "type": "HTTP",
       "version": "1.0.0",
@@ -445,7 +451,7 @@ async function apply() {
       console.log('# Paste the text below into Glitch:')
       console.log('')
       console.log('# e.g.: https://example.oktapreview.com')
-      console.log(`OKTA_BASE_URL=${program.oktaOrgUrl}`)
+      console.log(`OKTA_BASE_URL=${oktaOrgUrl}`)
       console.log('# App named "Browsing"')
       console.log(`BROWSING_APP_ID=${browsingApp.id}`)
       console.log('# App named "Ready to purchase"')
@@ -468,7 +474,7 @@ if(program.apply) {
 
   orgUsersCollection.each(user => {
     const login = user.profile.login;
-    if(!login.includes('@okta.com')) {
+    if(!login.includes('@okta.com') && !login.includes('@example.com')) {
       debug(`Processing ${login}`);
       if(user.status == 'DEPROVISIONED') {
         return user.delete()

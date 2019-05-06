@@ -22,13 +22,13 @@ class EventHook extends Resource {
 
 exports.apply = (client) => {
   client.listEventHooks = function () {
-    let url = `${this.baseUrl}/api/v1/webhooks`;
+    let url = `${this.baseUrl}/api/v1/eventHooks`;
 
     return new Collection(this, url, new ModelFactory(EventHook));
   }
 
   client.createEventHook = function(payload) {
-    let url = `${this.baseUrl}/api/v1/webhooks`;
+    let url = `${this.baseUrl}/api/v1/eventHooks`;
     const resources = [];
 
     const request = this.http.postJson(url, {
@@ -39,7 +39,7 @@ exports.apply = (client) => {
   }
 
   client.verifyEventHook = function(hookId) {
-    let url = `${this.baseUrl}/api/v1/webhooks/${hookId}/verify`;
+    let url = `${this.baseUrl}/api/v1/eventHooks/${hookId}/verify`;
     const resources = [];
 
     const request = this.http.post(url, null, {resources});
@@ -47,7 +47,7 @@ exports.apply = (client) => {
   }
 
   client.deactivateEventHook = function (hookId) {
-    let url = `${this.baseUrl}/api/v1/webhooks/${hookId}`;
+    let url = `${this.baseUrl}/api/v1/eventHooks/${hookId}`;
     const resources = [ url ];
 
     const request = this.http.putJson(url, {body: {status: "INACTIVE"}});
@@ -57,7 +57,7 @@ exports.apply = (client) => {
   }
 
   client.deleteEventHook = function (hookId) {
-    let url = `${this.baseUrl}/api/v1/webhooks/${hookId}`;
+    let url = `${this.baseUrl}/api/v1/eventHooks/${hookId}`;
     const resources = [ url ];
 
     const request = this.http.delete(url, null, {resources});
